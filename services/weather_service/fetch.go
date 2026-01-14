@@ -52,7 +52,6 @@ func FetchWeather(location string) (interface{}, error) {
 	if err != nil {
 		return nil, err
 	}
-
 	if err := json.Unmarshal(body, &decodedData); err != nil {
 		return nil, err
 	}

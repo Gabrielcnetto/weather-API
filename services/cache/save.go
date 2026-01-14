@@ -18,13 +18,20 @@ func SaveCache(city string, data interface{}) error {
 }
 
 func GetFromCache(city string) (interface{}, error) {
-	response, err := clients.RedisClient.Get(clients.Context, fmt.Sprintf("city:%v", city)).Result()
-	if err != nil || err == redis.Nil {
+	key := fmt.Sprintf("city:%v", city)
+
+	response, err := clients.RedisClient.Get(clients.Context, key).Result()
+	if err == redis.Nil {
+		return nil, nil
+	}
+	if err != nil {
 		return nil, err
 	}
+
 	var decodedData interface{}
 	if err := json.Unmarshal([]byte(response), &decodedData); err != nil {
 		return nil, err
 	}
+
 	return decodedData, nil
 }

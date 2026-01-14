@@ -2,18 +2,10 @@ package handlers
 
 import (
 	"encoding/json"
-	"fmt"
 	"net/http"
 
 	weatherservice "github.com/Gabrielcnetto/weather-API/services/weather_service"
 )
-
-func WeatherMiddleware(next http.Handler) http.Handler {
-	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		fmt.Println("whithout other verification")
-		next.ServeHTTP(w, r)
-	})
-}
 
 func responseJson(w http.ResponseWriter, r *http.Request, status int, messageKey string, message interface{}) {
 	w.Header().Set("Content-Type", "application/json")
@@ -23,11 +15,22 @@ func responseJson(w http.ResponseWriter, r *http.Request, status int, messageKey
 	}
 	json.NewEncoder(w).Encode(response)
 }
+func WeatherMiddleware(next http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		location := r.Header.Get("city")
+		if location == "" {
+			responseJson(w, r, http.StatusBadRequest, "error", "Location not found")
+			return
+		}
+		next.ServeHTTP(w, r)
+	})
+}
 
 func (wi *WeatherInfo) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	switch {
 	case http.MethodGet == r.Method:
-		response, err := weatherservice.FetchWeather("parobé")
+		location := r.Header.Get("city")
+		response, err := weatherservice.FetchWeather(location)
 		if err != nil {
 			responseJson(w, r, http.StatusBadRequest, "error", err.Error())
 			return

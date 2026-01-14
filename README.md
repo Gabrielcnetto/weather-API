@@ -6,5 +6,19 @@ Personal weather API built in pure Go using net/http with no frameworks. Fetches
 
 ## Screenshots
 
-![Logic](https://ibb.co/7xR32h5q)
+![Logic](https://i.ibb.co/GftZcmLq/weather-api-f8i1q.png)
 
+
+## How use
+
+To deploy this project run
+
+```bash
+  curl --location 'localhost:8080/weather' \
+--header 'city: porto Alegre'
+```
+
+## Authors
+
+- [@GabrielcNetto](https://github.com/Gabrielcnetto)
+- [RoadmapSh](https://roadmap.sh/projects/weather-api-wrapper-service)
